@@ -142,7 +142,7 @@ nav a:hover {
     margin: 5px 0;
     text-align: center;
 }
-.car-details .upgrades #img-cont {
+.car-details .upgrades .img-cont {
     width: 100%;
     background-color: var(--main-blue);
     border: 1px solid #333;
