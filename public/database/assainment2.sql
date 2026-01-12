@@ -1,4 +1,4 @@
-INSERT INTO public.account VALUES (account_firstname='Tony', account_lastname='Stark', account_email='tony@starkent.com', account_password='Iam1ronM@n');
+INSERT INTO public.account (account_firstname, account_lastname, account_email, account_password) VALUES ('Tony', 'Stark', 'tony@starkent.com', 'Iam1ronM@n');
 UPDATE public.account SET account_type='Admin' WHERE account_firstname='Tony' AND account_lastname='Stark';
 DELETE FROM public.account WHERE account_firstname='Tony' AND account_lastname='Stark';
 UPDATE public.inventory SET inv_description = REPLACE(inv_description, 'small interiors', 'a huge interior') WHERE inv_make = 'GM' AND inv_model = 'Hummer';
