@@ -84,10 +84,11 @@ Util.buildVehicleDetails = function(data) {
                 details += '<p id="vehicle-price">Price: $' + new Intl.NumberFormat('en-US').format(data.inv_price) + '</p>'
                 details += '<p id="vehicle-description">' + data.inv_description + '</p>'
                 details += '<ul id="vehicle-specs">'
+                 // Capitalizing first letter of color name even after hyphens, underscores, or spaces and displaying color in text, while also formatting low-contrast colors to be more appealing against background
                     details += `<li id="vehicle-color">
                         Color: 
-                        <span class="${needsContrastFix ? 'low-contrast' : ''}" style="color: ${colorName}">
-                            ${data.inv_color}
+                        <span class="${needsContrastFix ? 'low-contrast' : ''}" style="color: ${colorName === 'rust' ? 'brown' : colorName}">
+                            ${data.inv_color.replace(/(?:^|[\s-_])\w/g, c => c.toUpperCase())}
                         </span>
                     </li>`
                     details += '<li id="vehicle-miles">Miles: ' + new Intl.NumberFormat('en-US').format(data.inv_miles) + '</li>'
