@@ -35,7 +35,7 @@ if (process.env.NODE_ENV === 'development') {
     pool = new Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false // Render has internal certificates which this App cannot access or verify
         },
     })
     module.exports = pool
