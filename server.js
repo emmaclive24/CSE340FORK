@@ -34,6 +34,9 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
 app.use("/inv", utilities.handleErrors(inventoryRoute)) // handles both the classification grid and single item views
 
+// Error testing route
+app.get("/error", utilities.handleErrors(require("./controllers/errorController").triggerError))
+
 /* File Not Found Route */
 app.use(async (req, res, next) => {
     next({ status: 404, message: "It appears the page has been lost, maybe it was sold? So good news, you have good taste!" });
@@ -43,16 +46,16 @@ app.use(async (req, res, next) => {
 app.use(async (err, req, res, next) => {
     let nav = await utilities.getNav();
     console.error(`Error at: "${req.originalUrl}": ${err.message}`);
-    if (err.status == 404) {
-        message = err.message } else { message = "Uh oh, a crash has occured, trust us, crashes are the last thing we want here. Maybe we should have changed routes?"}
-    res.render("errors/error", {
+    let message;
+    if (err.status == 404) { message = err.message } 
+    else { message = "Uh oh, a crash has occured, trust us, crashes are the last thing we want here. Maybe we should have changed routes?" }
+    res.status(err.status || 500).render("errors/error", {
         title: err.status || "Server Error",
+        status: err.status || 500,
         message,
         nav,
     })
 })
-
-
 
 /* ***********************
  * Local Server Information
