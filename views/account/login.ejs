@@ -1,0 +1,26 @@
+<script>
+function togglePassword() {
+    const pwd = document.getElementById('account_password');
+    const pswdShow = document.getElementById('pswdShow');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+    pswdShow.textContent = pwd.type === 'password' ? 'Show Password' : 'Hide Password';
+}
+</script>
+
+<div id="login-box">
+    <h1>Account Login</h1>
+    <%- messages() %>
+    <form action="/account/login" method="post" id="login-form">
+        <label for="account_email">Email Address</label>
+        <input type="email" name="account_email" id="account_email" required <% if (typeof clientEmail !== 'undefined') { %> value="<%= clientEmail %>" <% } %> >
+        
+        <label for="account_password">Password</label>
+        <input type="password" name="account_password" id="account_password" required 
+        pattern="(?=^.{12,}$)(?=.*\d)(?=.*\W+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
+        title="Password must be at least 12 characters and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.">
+        <span id="pswdShow" onclick="togglePassword()">Show Password</span>
+        <br>
+        <button type="submit" id="login-btn">Login</button>
+    </form>
+    <p>No account? <a href="/account/registration">Sign-up</a></p>
+</div>

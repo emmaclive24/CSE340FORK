@@ -1,0 +1,31 @@
+<script>
+function togglePassword() {
+    const pwd = document.getElementById('account_password');
+    const pswdShow = document.getElementById('pswdShow');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+    pswdShow.textContent = pwd.type === 'password' ? 'Show Password' : 'Hide Password';
+}
+</script>
+
+<div id="login-box">
+    <h1>Account Registration</h1>
+    <%- messages() %>
+    <form action="/account/register" method="post" id="login-form">
+        <label for="account_firstname">First Name</label>
+        <input type="text" name="account_firstname" id="account_firstname" required <% if (typeof clientFirstname !== 'undefined') { %> value="<%= clientFirstname %>" <% } %> >
+        
+        <label for="account_lastname" id="account_lastname" <% if (typeof clientLastname !== 'undefined') { %> value="<%= clientLastname %>" <% } %> >Last Name</label>
+        <input type="text" name="account_lastname" id="account_lastname" required>
+
+        <label for="account_email">Email Address</label>
+        <input type="email" name="account_email" id="account_email" required <% if (typeof clientEmail !== 'undefined') { %> value="<%= clientEmail %>" <% } %> >
+        
+        <label for="account_password">Password</label>
+        <input type="password" name="account_password" id="account_password" required 
+        pattern="(?=^.{12,}$)(?=.*\d)(?=.*\W+)(?![.\n])(?=.*[A-Z]).*$"
+        title="Password must be at least 12 characters and contain at least 1 uppercase letter, 1 number, and 1 special character.">
+        <span id="pswdShow" onclick="togglePassword()">Show Password</span>
+        
+        <button type="submit" id="login-btn">Register</button>
+    </form>
+</div>
