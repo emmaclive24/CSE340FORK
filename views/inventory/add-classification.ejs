@@ -1,0 +1,20 @@
+<% if (title) { %>
+ <h1><%= title %></h1>
+ <% } else {
+    res.redirect('/')
+ } %>
+
+ <% if (typeof messages !== 'undefined') { %>
+    <% if (messages.error) { %>
+        <div class="notice error"><%= messages.error %></div>
+    <% } %>
+    <% if (messages.success) { %>
+        <div class="notice success"><%= messages.success %></div>
+    <% } %>
+<% } %>
+
+<form action="/inv/classification" method="POST" class="add-form" id="add-class">
+    <label for="classification_name">Name:</label>
+    <input type="text" name="classification_name" id="classification_name" required maxlength="30" pattern="[A-Za-z0-9]+" title="Letters and numbers only, no spaces or special characters." <% if (typeof classification_name !== 'undefined') { %> value="<%= classification_name %>" <% } %>>
+    <button type="submit" class="submit-btn">Add Classification</button> 
+</form>

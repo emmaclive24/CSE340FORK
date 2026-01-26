@@ -62,7 +62,7 @@ app.use(require("./routes/static"))
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
-app.use("/inv", utilities.handleErrors(inventoryRoute)) // handles both the classification grid and single item views
+app.use("/inv", utilities.handleErrors(inventoryRoute)) // handles classification grid, single item, and all inventory managment views
 
 // Account Route
 app.use("/account", utilities.handleErrors(accountRoute))

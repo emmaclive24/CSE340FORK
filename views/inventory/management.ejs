@@ -1,0 +1,19 @@
+<% if (title) { %>
+ <h1><%= title %></h1>
+ <% } else {
+    res.redirect('/')
+ } %>
+
+<% if (typeof messages !== 'undefined') { %>
+    <% if (messages.error) { %>
+        <div class="notice error"><%= messages.error %></div>
+    <% } %>
+    <% if (messages.success) { %>
+        <div class="notice success"><%= messages.success %></div>
+    <% } %>
+<% } %>
+
+<div id="management-links">
+    <a href="/inv/classification" class="btn btn-primary">Add New Classification</a>
+    <a href="/inv/new" class="btn btn-primary">Add New Inventory Item</a>
+</div>

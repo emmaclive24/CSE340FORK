@@ -212,7 +212,7 @@ nav a:hover {
     color: white;
     text-decoration: underline;
 }
-#login-btn {
+.submit-btn {
     background-color: white;
     color: var(--main-blue);
     border: none;
