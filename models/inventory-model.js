@@ -4,7 +4,7 @@ const { get } = require("../routes/static")
 /* Return all classifications from the Database */
 async function getClassifications() {
     return await pool.query(
-        "SELECT * FROM public.classification ORDER BY classification_name"
+        "SELECT * FROM public.classification ORDER BY classification_id"
     )
 }
 
@@ -36,11 +36,11 @@ async function getByInventoryId(inv_id) {
     }
 }
 
-async function addClassification(classification_name) {
+async function addClassification(classification_id) {
     try {
         const query = await pool.query(
-            `INSERT INTO public.classification VALUES classification_name = $1`,
-            [classification_name]
+            `INSERT INTO public.classification (classification_id) VALUES ($1)`,
+            [classification_id]
         )
         return query.rowCount === 1;
     } catch (error) {
@@ -48,4 +48,39 @@ async function addClassification(classification_name) {
     }
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId, getByInventoryId, addClassification }
+async function addNewVehicle(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id) {
+    try {
+        const query = await pool.query(
+            `INSERT INTO public.inventory (
+                inv_make,
+                inv_model,
+                inv_year,
+                inv_description,
+                inv_image,
+                inv_thumbnail,
+                inv_price,
+                inv_miles,
+                inv_color,
+                classification_id
+            )
+            VALUES (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6,
+                $7,
+                $8,
+                $9,
+                $10
+            )`,
+            [inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id]
+        )
+        return query.rowCount === 1;
+    } catch (error) {
+        console.error("addNewVehicle error " + error)
+    }
+}
+
+module.exports = { getClassifications, getInventoryByClassificationId, getByInventoryId, addClassification, addNewVehicle }

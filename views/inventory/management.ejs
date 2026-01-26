@@ -5,11 +5,18 @@
  } %>
 
 <% if (typeof messages !== 'undefined') { %>
-    <% if (messages.error) { %>
-        <div class="notice error"><%= messages.error %></div>
+    <% if (messages.notice) { %>
+        <div class="notice">&#10069; <%= messages.notice %></div>
+    <% } %>
+    <% if (typeof errors !== 'undefined' && !errors.isEmpty()) { %>
+        <ul class="notice error">
+            <% errors.array().forEach(error => { %>
+                <li>&#9940; <%= error.msg %></li>
+            <% }) %>
+        </ul>
     <% } %>
     <% if (messages.success) { %>
-        <div class="notice success"><%= messages.success %></div>
+        <div class="notice success">&#9989; <%= messages.success %></div>
     <% } %>
 <% } %>
 
