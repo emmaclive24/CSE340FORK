@@ -101,7 +101,7 @@ Util.buildVehicleDetails = function(data) {
 }
 
 /* Classification Drop Down for Add Inventory */
-Util.buildClassificationList = async function (classification_id = null) {
+Util.buildClassificationList = async function (classification_id = null) { 
     let data = await invModel.getClassifications()
     let classificationList =
       '<select name="classification_id" id="classificationList" required>'

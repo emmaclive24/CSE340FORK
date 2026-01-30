@@ -12,7 +12,7 @@ function togglePassword() {
     <%- messages() %>
     <form action="/account/login" method="post" id="login-form">
         <label for="account_email">Email Address</label>
-        <input type="email" name="account_email" id="account_email" required <% if (typeof clientEmail !== 'undefined') { %> value="<%= clientEmail %>" <% } %> >
+        <input type="email" name="account_email" id="account_email" required <% if (typeof clientEmail !== 'undefined') { %> value="<%= locals.clientEmail %>" <% } %> >
         
         <label for="account_password">Password</label>
         <input type="password" name="account_password" id="account_password" required 

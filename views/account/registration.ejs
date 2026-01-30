@@ -19,13 +19,13 @@ function togglePassword() {
     <% } %>
     <form action="/account/register" method="post" class="add-form">
         <label for="account_firstname">First Name</label>
-        <input type="text" name="account_firstname" id="account_firstname" required <% if (typeof clientFirstname !== 'undefined') { %> value="<%= clientFirstname %>" <% } %> >
+        <input type="text" name="account_firstname" id="account_firstname" required <% if (typeof account_firstname !== 'undefined') { %> value="<%= locals.account_firstname %>" <% } %> >
         
-        <label for="account_lastname" id="account_lastname" <% if (typeof clientLastname !== 'undefined') { %> value="<%= clientLastname %>" <% } %> >Last Name</label>
-        <input type="text" name="account_lastname" id="account_lastname" required>
+        <label for="account_lastname" id="account_lastname">Last Name</label>
+        <input type="text" name="account_lastname" id="account_lastname" required <% if (typeof account_lastname !== 'undefined') { %> value="<%= locals.account_lastname %>" <% } %>>
 
         <label for="account_email">Email Address</label>
-        <input type="email" name="account_email" id="account_email" required <% if (typeof clientEmail !== 'undefined') { %> value="<%= clientEmail %>" <% } %> >
+        <input type="email" name="account_email" id="account_email" required <% if (typeof account_email !== 'undefined') { %> value="<%= locals.account_email %>" <% } %> >
         
         <label for="account_password">Password</label>
         <input type="password" name="account_password" id="account_password" required 
