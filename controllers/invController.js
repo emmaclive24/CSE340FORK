@@ -165,4 +165,80 @@ invCont.getInventoryJSON = async (req, res, next) => {
     }
 }
 
+// Building the Vehicle Detail Editor
+invCont.buildVehicleEditor = async (req, res, next) => {
+    const inv_id = parseInt(req.params.invId || req.body.inv_id);
+    let nav = await utilities.getNav()
+    const data = await invModel.getByInventoryId(inv_id)
+    const { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = data
+    let class_drop = await utilities.buildClassificationList(classification_id)
+    const vehName = `${data.inv_make} ${data.inv_model}`
+    let year = new Date().getFullYear();
+
+    req.flash("notice", `Updating ${vehName}`)
+    res.render(`inventory/edit`, {
+        title: "Update " + vehName,
+        nav,
+        messages: req.flash(),
+        classification_drop: class_drop,
+        max_year: (year + 1),
+        inv_make,
+        inv_model, 
+        inv_year, 
+        inv_description, 
+        inv_image, 
+        inv_thumbnail, 
+        inv_price, 
+        inv_miles, 
+        inv_color, 
+        classification_id,
+        inv_id
+    })
+}
+
+invCont.updateVehicle = async function (req, res, next) {
+    const { inv_make, inv_model, inv_description, inv_image, inv_thumbnail, inv_color } = req.body
+    const inv_year = parseInt(req.body.inv_year) || null;
+    const inv_price = parseInt(req.body.inv_price) || 0;
+    const inv_miles = parseInt(req.body.inv_miles) || 0;
+    const classification_id = parseInt(req.body.classification_id) || null;
+    const inv_id = parseInt(req.params.invId || req.body.inv_id);
+    console.log("Inventory ID: ", inv_id)
+
+    const result = await invModel.updateVehicle(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id, inv_id)
+    let nav = await utilities.getNav()
+    let class_drop = await utilities.buildClassificationList(classification_id)
+    console.log("result: ", result);
+
+    if (result) {
+        req.flash("success", `${inv_year} ${inv_make} ${inv_model} was updated successfully.`)
+        res.render("inventory/management", {
+            title: "Inventory Manager",
+            nav,
+            messages: req.flash(),
+            classSelect: class_drop
+        })
+    } else {
+        let year = new Date().getFullYear();
+        req.flash("notice", `Failed to update the ${inv_year}, ${inv_make} ${inv_model}`)
+        res.render(`inventory/edit`, {
+            title: "Update " + vehName,
+            nav,
+            messages: req.flash(),
+            classification_drop: class_drop,
+            max_year: (year + 1),
+            inv_make,
+            inv_model, 
+            inv_year, 
+            inv_description, 
+            inv_image, 
+            inv_thumbnail, 
+            inv_price, 
+            inv_miles, 
+            inv_color, 
+            classification_id
+        })
+    }
+}
+
 module.exports = invCont

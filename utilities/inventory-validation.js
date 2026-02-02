@@ -17,7 +17,7 @@ validate.classRules = () => {
     ]
 }
 
-validate.newInvRules = () => {
+validate.invRules = () => {
     let year = new Date().getFullYear();
     return [
         // Make (required, letters, spaces, and hyphens only, 2-20 chars)
@@ -135,6 +135,27 @@ validate.checkNewInventoryData = async(req, res, next) => {
         let class_drop = await utilities.buildClassificationList(class_id)
         let year = new Date().getFullYear();
         return res.render("inventory/add-inventory", {
+            ...req.body,
+            errors,
+            title: "Add New Vehicle",
+            nav,
+            classification_drop: class_drop,
+            max_year: (year + 1),
+            messages: req.flash()
+        })
+    }
+    next()
+}
+
+validate.checkUpdateData = async(req, res, next) => {
+    const errors = validationResult(req)
+    const class_id = req.body.classification_id || ''
+
+    if(!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        let class_drop = await utilities.buildClassificationList(class_id)
+        let year = new Date().getFullYear();
+        return res.render("inventory/edit", {
             ...req.body,
             errors,
             title: "Add New Vehicle",

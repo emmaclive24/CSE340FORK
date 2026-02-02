@@ -1,0 +1,106 @@
+<% if (title) { %>
+ <h1><%= title %></h1>
+ <% } else {
+    res.redirect('/')
+ } %>
+
+<% if (typeof messages !== 'undefined') { %>
+    <% if (messages.notice) { %>
+        <div class="notice">&#10069; <%= messages.notice %></div>
+    <% } %>
+    <% if (typeof errors !== 'undefined' && !errors.isEmpty()) { %>
+        <ul class="notice error">
+            <% errors.array().forEach(error => { %>
+                <li>&#9940; <%= error.msg %></li> 
+            <% }) %>
+        </ul>
+    <% } %>
+    <% if (messages.success) { %>
+        <div class="notice success">&#9989; <%= messages.success %></div>
+    <% } %>
+<% } %>
+
+<div id="login-box">
+    <form action="/inv/edit/<%= inv_id %>" method="POST" class="edit-form" id="edit-inventory">
+        <label for="inv_make">Make: </label>
+        <input type="text" name="inv_make" id="inv_make" value="<%= inv_make %>" required placeholder="Honda">
+        <label for="inv_model">Model: </label>
+        <input type="text" name="inv_model" id="inv_model" value="<%= inv_model %>" required placeholder="Accord">
+        <label for="inv_year">Year: </label>
+        <input type="number" name="inv_year" id="inv_year" min="1900" max="<%= max_year %>" value="<%= inv_year %>" required placeholder="1994">
+        <label for="inv_description">Description: </label>
+        <textarea name="inv_description" id="inv_description" required placeholder="Describe the car, how does it ride, who would be looking for this car?"><%= inv_description %></textarea>
+        <label for="inv_image">Image: </label>
+        <input type="text" name="inv_image" id="inv_image" value="<%= inv_image %>" required placeholder="/images/vehicles/honda-accord.jpg">
+        <label for="inv_thumbnail">Thumbnail: </label>
+        <input type="text" name="inv_thumbnail" id="inv_thumbnail" value="<%= inv_thumbnail  %>" required placeholder="/images/vehicles/honda-accord-tn.jpg">
+        <label for="inv_price">Price: </label>
+        <input type="number" name="inv_price" id="inv_price" value="<%= inv_price %>" required placeholder="1300">
+        <label for="inv_miles">Miles: </label>
+        <input type="number" name="inv_miles" id="inv_miles" value="<%= inv_miles %>" required placeholder="123,256">
+        <label for="inv_color">Color: </label>
+        <input type="text" name="inv_color" id="inv_color" value="<%= inv_color %>" required placeholder="Silver">
+        <label for="classification_id">Car Classification</label>
+        <%- classification_drop %>
+        <br>
+        <input type="hidden" name="inv_id" value="<%= inv_id %>">
+        <button type="submit" class="submit-btn" disabled>Edit Vehicle</button>
+
+        <!-- Client-Side Validation 
+
+        <script>
+            document.getElementById('edit-inventory').addEventListener('submit', function(e) {
+                const formData = new FormData(this);
+                const make = formData.get('inv_make')?.trim();
+                const model = formData.get('inv_model')?.trim();
+                const year = formData.get('inv_year');
+                const price = formData.get('inv_price')?.trim();
+                const miles = formData.get('inv_miles')?.trim();
+                
+                // Reset previous errors
+                document.querySelectorAll('.error-message').forEach(el => el.remove());
+                
+                let hasError = false;
+                
+                // Make/Model validation
+                if (!make || make.length < 2) {
+                    showError('inv_make', 'Make must be at least 2 characters');
+                    hasError = true;
+                }
+                if (!model || model.length < 2) {
+                    showError('inv_model', 'Model must be at least 2 characters');
+                    hasError = true;
+                }
+                
+                // Price validation
+                const priceNum = parseFloat(price.replace(/[\$,]/g, ''));
+                if (isNaN(priceNum) || priceNum <= 0) {
+                    showError('inv_price', 'Price must be a positive number');
+                    hasError = true;
+                }
+                
+                // Miles validation
+                const milesNum = parseInt(miles.replace(/,/g, ''));
+                if (isNaN(milesNum) || milesNum < 0) {
+                    showError('inv_miles', 'Miles must be 0 or greater');
+                    hasError = true;
+                }
+                
+                if (hasError) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            function showError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                const error = document.createElement('div');
+                error.className = 'notice error';
+                error.textContent = message;
+                field.parentNode.appendChild(error);
+                field.focus();
+            }
+        </script> -->
+    </form>
+    <script src="/js/inv-update.js"></script>
+</div>
