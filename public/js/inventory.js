@@ -1,8 +1,10 @@
 'use strict'
+const classList = document.querySelector('#classificationList')
 // Get a list of items in inventory based on classification_id
-let classList = document.querySelector('#classificationList')
-classList.addEventListener("change", function () {
+function loadInventoryManagmentByClass() {
     let classification_id = classList.value
+    if(!classification_id) return //value not selected
+
     console.log(`classification_id is: ${classification_id}`)
     let classIdURL = "/inv/getInventory/" + classification_id
     fetch(classIdURL)
@@ -19,7 +21,7 @@ classList.addEventListener("change", function () {
     .catch(function (error) {
         console.log('There was an problem: ', error.message)
     })
-})
+}
 
 function buildInventoryList(data) {
     console.log("We are in the Inventory List Constructor.")
@@ -40,3 +42,9 @@ function buildInventoryList(data) {
 
     inventoryDisplay.innerHTML = dataTable;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadInventoryManagmentByClass()
+})
+
+classList.addEventListener("change", loadInventoryManagmentByClass)
