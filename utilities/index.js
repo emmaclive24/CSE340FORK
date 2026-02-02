@@ -123,4 +123,31 @@ Util.buildClassificationList = async function (classification_id = null) {
 /* Middleware for Handling Errors, General Error Handling */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
+/* Check Login */
+Util.checkLogin = (req, res, next) => {
+    console.log("Checking Login");
+    if (res.locals.loggedin) {
+        console.log("account Data: ", res.locals.accountData);
+        if (res.locals.accountData.account_type.toLowerCase() != 'client') {
+            res.locals.employee = true;
+        } else {
+            res.locals.employee = false;
+        }
+        next()
+    } else {
+        req.flash("notice", "Please log in.")
+        return res.redirect("/account/login")
+    }
+}
+
+Util.checkEmployee = (req, res, next) => {
+    console.log("Checking Employee Status", res.locals.employee);
+    if (res.locals.employee) {
+        next()
+    } else {
+        req.flash("notice", "Area is off limits to non-employee's.");
+        return res.redirect("/account/login");
+    }
+}
+
 module.exports = Util

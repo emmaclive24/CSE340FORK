@@ -9,11 +9,12 @@ router.get("/type/:classificationId", utilities.handleErrors(invController.build
 // Route to build single vehicle detail view
 router.get("/detail/:invId", utilities.handleErrors(invController.buildByInventoryId));
 //Route to Build Management View
-router.get("/management", invController.buildManagement);
+router.get("/", utilities.checkLogin, utilities.checkEmployee, invController.buildManagement);
     // New Classification and New Inventory Routes
     router.get("/classification", invController.buildAddClass)
     router.post("/classification", invValidate.classRules(), invValidate.checkClassificationData, utilities.handleErrors(invController.addClass))
     router.get("/new", invController.buildNewInventoryForm)
     router.post("/new", invValidate.newInvRules(), invValidate.checkNewInventoryData, utilities.handleErrors(invController.addNewInventory))
+    router.get("/getInventory/:classification_id", utilities.checkLogin, utilities.handleErrors(invController.getInventoryJSON))
 
 module.exports = router

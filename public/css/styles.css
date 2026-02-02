@@ -31,6 +31,10 @@ header a {
     text-decoration: none;
     color: #35424a;
 }
+#user_head a {
+    text-decoration: underline;
+    color: var(--main-blue);
+}
 #return {
     font-size: 24px;
     font-weight: bold;

@@ -5,7 +5,9 @@
 /* ***********************
  * Require Statements
  *************************/
+const jwt = require('jsonwebtoken')
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
@@ -41,10 +43,26 @@ app.use(function(req, res, next) {
     res.locals.messages = require('express-messages')(req, res)
     next()
 })
-
+app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.static("public"))
 
+// JWT Logged in Check 
+app.use((req, res, next) => {
+    res.locals.loggedin = false
+    const token = req.cookies.jwt
+    if (!token) return next()
+    try {
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+        res.locals.loggedin = true
+        res.locals.accountData = decoded
+    } catch (err) {
+        console.log("Server error: ", err)
+        res.locals.loggedin = false
+    }
+    next()
+})
 
 /* ***********************
 * View Engine and Templates
@@ -62,10 +80,10 @@ app.use(require("./routes/static"))
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
-app.use("/inv", utilities.handleErrors(inventoryRoute)) // handles classification grid, single item, and all inventory managment views
+app.use("/inv", inventoryRoute) // handles classification grid, single item, and all inventory managment views
 
 // Account Route
-app.use("/account", utilities.handleErrors(accountRoute))
+app.use("/account", accountRoute)
 
 // Error testing route
 app.get("/error", utilities.handleErrors(require("./controllers/errorController").triggerError))

@@ -55,18 +55,122 @@ validate.registrationRules = () => {
         }) Adding the custom method for Spaces seemed excessive so I just used the regular expression from the client-side validation. */
 }
 
+validate.updateAccountRules = () => {
+    return [
+    body("account_firstname")
+        .trim()
+        .escape()
+        .notEmpty()
+        // .isLength({ min: 1 }) already covered with "isEmpty"
+        .withMessage("Please provide your first name."),
+    
+    body("account_lastname")
+        .trim()
+        .escape()
+        .notEmpty()
+        // .isLength({ min: 1 }) already covered with "isEmpty"
+        .withMessage("Please provide your last name."),
+
+    body("account_email")
+        .trim()
+        .escape()
+        .normalizeEmail()
+        .notEmpty().withMessage("Email is required.").bail() // If empty stops
+        .isEmail().withMessage("Email must be Valid").bail() // Stops if invalid email
+        .custom(async (account_email, { req }) => {
+            const emailExists = await accountModel.checkExistingEmail(account_email)
+            if(emailExists && account_email !== res.locals.accountData.account_email) { // Checks if the changed email already has a seperate, already existing account
+                throw new Error("New email address is already in use on another profile.")
+            }
+        })
+    ]
+}
+validate.passwordRules = () => {
+    return body("account_password")
+        .trim()
+        .notEmpty().withMessage("Please Provide a password")
+        .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$/) 
+        .withMessage("Password must have an upper and lowercase letter, a number, and a symbol, with no spaces.")
+}
+
 // Check the Data and Return errors to continue registration //
 validate.checkRegData = async (req, res, next) => {
     const { account_firstname, account_lastname, account_email, account_password } = req.body
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         let nav = await utilities.getNav()
-        res.render("account/registration", {
+        res.render("/registration", {
             errors,
             title: "registration",
             nav,
             account_firstname,
             account_lastname,
+            account_email,
+            account_password
+        })
+        return
+    }
+    next()
+}
+validate.checkUpdateAccountData = async (req, res, next) => {
+    const { account_firstname, account_lastname, account_email } = req.body
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        res.render("/update", {
+            errors,
+            title: "Update Account",
+            nav,
+            account_firstname,
+            account_lastname,
+            account_email,
+        })
+        return
+    }
+    next()
+}
+validate.checkPasswordData = async (req, res, next) => {
+    const account_password = req.body
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        res.render('/update', {
+            errors,
+            title: "Update Password",
+            nav,
+            account_password,
+        })
+        return
+    }
+    next()
+}
+
+validate.loginRules = () => {
+    return [
+        body("account_email")
+            .trim()
+            .escape()
+            .normalizeEmail()
+            .notEmpty().withMessage("Email is required.").bail() // If empty stops
+            .isEmail().withMessage("Email must be Valid").bail(), // Stops if invalid email
+
+        body("account_password")
+            .trim()
+            .notEmpty().withMessage("Please Provide a password")
+            .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$/) // just using the regular expression given in the client-side validation, for consistency sake.
+            .withMessage("Password must have an upper and lowercase letter, a number, and a symbol, with no spaces.")
+    ]
+}
+
+validate.checkLoginData = async (req, res, next) => {
+    const { account_email, account_password } = req.body
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        let nav = await utilities.getNav()
+        res.render('/login', {
+            errors,
+            title: "Login",
+            nav,
             account_email,
             account_password
         })

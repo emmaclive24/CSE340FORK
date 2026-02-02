@@ -1,5 +1,16 @@
 <h1>Welcome to CSE Motors!</h1>
-<%- messages() %>
+<% if (messages && Object.keys(messages).length > 0) { %>
+    <% if (messages.notice) { const seen = new Set(); messages.notice.forEach(msg => { if (!seen.has(msg)) { %>
+                <div class="notice">&#10069; <%= msg %></div>
+            <% seen.add(msg); } }) %> 
+    <% } %>
+    <% if (messages.success) { %>
+        <% messages.success.forEach(msg => { %>
+            <div class="notice success">&#9989; <%= msg %></div>
+        <% }) %>
+    <% } %>
+<% } %>
+
 <div id="hero">
     <img src="/images/vehicles/delorean.jpg" alt="A selection of vehicles from CSE Motors">
     <div class="hero-text">

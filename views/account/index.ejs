@@ -1,0 +1,18 @@
+<div class="wrapper" id="account-manager-div">
+    <h1>Account Managment</h1>
+    <%- messages() %>
+    <% if (errors) { %>
+        <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+        <% }) %>
+        </ul>
+    <% } %>
+    <h2>Welcome <%- accountData.account_firstname %></h2>
+    <% if (accountData.account_type.toLowerCase() != 'client') { %>
+        <h3>Inventory Managment</h3> <% } %>
+    <a href="account/update" title="Update Account Information">Update Account</a>
+    <% if (accountData.account_type.toLowerCase() != 'client') { %>
+        <a href='/inv/' title='Inventory Managment'>Update Inventory</a> 
+    <% } %>
+</div>

@@ -10,6 +10,13 @@ function togglePassword() {
 <div id="login-box">
     <h1>Account Login</h1>
     <%- messages() %>
+    <% if (errors) { %>
+        <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+        <% }) %>
+        </ul>
+    <% } %>
     <form action="/account/login" method="post" id="login-form">
         <label for="account_email">Email Address</label>
         <input type="email" name="account_email" id="account_email" required <% if (typeof clientEmail !== 'undefined') { %> value="<%= locals.clientEmail %>" <% } %> >
