@@ -94,11 +94,11 @@ Util.buildFilterControl = async function (classification_ids, prevFilters={} ) {
                 ${row.classification_name}
                 <input
                     type="checkbox" 
-                    id="class_${row.classification_name}" 
+                    id="class_${row.classification_id}" 
                     value="${row.classification_id}" 
                     ${isChecked}
                     title="Filter for ${row.classification_name} vehicles"
-                    name="class_${row.classification_name}"
+                    name="classification_ids[]"
                 >
             </label>
         </li>`

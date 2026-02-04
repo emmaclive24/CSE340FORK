@@ -99,10 +99,12 @@ invCont.addClass = async function (req, res, next) {
     }
 
     const nav = await utilities.getNav() // New nav with new classification if successful
+    const classSelect = await utilities.buildClassificationList()
     return res.render("inventory/management", {
         title: "Inventory Manager",
         nav,
-        messages: req.flash()
+        messages: req.flash(),
+        classSelect
     })
 }
 
@@ -160,17 +162,28 @@ invCont.buildNewInventoryForm = async function (req, res, next) {
 
 invCont.addNewInventory = async function (req, res, next) {
     const { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body
+    const classification_name = ''
     const result = await invModel.addNewVehicle(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id)
+    const classes = await invModel.getClassifications()
+
+    classes.rows.forEach(row => {
+        if(row.classification_id === classification_id) {
+            classification_name = row.classification_name
+        }
+    })
     let nav = await utilities.getNav()
 
     if (result) {
-        req.flash("success", `${inv_year} ${inv_make} ${inv_model} was added to the Database.`)
+        req.flash("success", `${inv_year} ${inv_make} ${inv_model} was added to the Database under classification: ${classification_name}.`)
+        const classSelect = await utilities.buildClassificationList()
         res.render("inventory/management", {
             title: "Inventory Manager",
             nav,
-            messages: req.flash()
+            messages: req.flash(),
+            classSelect
         })
     } else {
+        console.log("Is this where we are?")
         let class_drop = await utilities.buildClassificationList()
         let year = new Date().getFullYear();
         req.flash("error", `Failed to add the ${inv_year}, ${inv_make} ${inv_model}`)
@@ -178,7 +191,7 @@ invCont.addNewInventory = async function (req, res, next) {
             title: "Add New Inventory",
             nav,
             messages: req.flash(),
-            classification_drop: class_drop,
+            classSelect: class_drop,
             max_year: (year + 1)
         })
     }
@@ -187,11 +200,11 @@ invCont.addNewInventory = async function (req, res, next) {
 // Return Inventory by Classification as JSON
 invCont.getInventoryJSON = async (req, res, next) => {
     const classification_id = parseInt(req.params.classification_id)
-    const invData = await invModel.getInventoryByClassificationId(classification_id)
-    if (invData[0].inv_id) {
-        return res.json(invData)
+    const invData = await invModel.getInventoryByClassificationId([classification_id])
+    if (invData.length > 0) {
+        return res.json({data: invData})
     } else {
-        next(new Error("No Data returned"))
+        return res.json({warning: "No inventory found for this classification"})
     }
 }
 
@@ -267,6 +280,43 @@ invCont.updateVehicle = async function (req, res, next) {
             inv_miles, 
             inv_color, 
             classification_id
+        })
+    }
+}
+
+// Delete Vehicle
+invCont.removeVehicle = async function (req, res, next) {
+    const inv_id = parseInt(req.params.inv_id)
+    
+    const oldCar = await invModel.getByInventoryId(inv_id)
+    const classes = await invModel.getClassifications()
+    let oldClass = ''
+    classes.rows.forEach(row => {
+        if(row.classification_id === oldCar.classification_id) {
+            oldClass = row.classification_name
+        }
+    })
+
+    const result = await invModel.deleteVehicle(inv_id)
+
+    let nav = await utilities.getNav()
+    const classSelect = await utilities.buildClassificationList()
+
+    if (result) {
+        req.flash("success", `The ${oldCar.inv_year} ${oldCar.inv_make} ${oldCar.inv_model} was successfully deleted from ${oldClass}.`)
+        res.render("inventory/management", {
+            title: "Inventory Manager",
+            nav,
+            messages: req.flash(),
+            classSelect
+        })
+    } else {
+        req.flash("error", `Failed to delete the ${oldCar.inv_year} ${oldCar.inv_make} ${oldCar.inv_model} from ${oldClass}.`)
+        res.render("inventory/management", {
+            title: "Inventory Manager",
+            nav,
+            messages: req.flash(),
+            classSelect
         })
     }
 }

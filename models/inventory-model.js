@@ -94,11 +94,11 @@ async function getByInventoryId(inv_id) {
     }
 }
 
-async function addClassification(classification_id) {
+async function addClassification(classification_name) {
     try {
         const query = await pool.query(
-            `INSERT INTO public.classification (classification_id) VALUES ($1)`,
-            [classification_id]
+            `INSERT INTO public.classification (classification_name) VALUES ($1)`,
+            [classification_name]
         )
         return query.rowCount === 1;
     } catch (error) {
@@ -167,4 +167,14 @@ async function updateVehicle(inv_make, inv_model, inv_year, inv_description, inv
     }
 }
 
-module.exports = { getClassifications, getFilterOptions, getInventoryByClassificationId, getByInventoryId, addClassification, addNewVehicle, updateVehicle }
+async function deleteVehicle(inv_id) {
+    try {
+        const sql = 'DELETE FROM inventory WHERE inv_id = $1'
+        const data = await pool.query(sql, [inv_id])
+        return data.rowCount
+    } catch (error) {
+        console.error("deleteVehicle error " + error)
+    }
+}
+
+module.exports = { getClassifications, getFilterOptions, getInventoryByClassificationId, getByInventoryId, addClassification, addNewVehicle, updateVehicle, deleteVehicle }

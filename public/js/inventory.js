@@ -16,31 +16,49 @@ function loadInventoryManagmentByClass() {
     })
     .then(function (data) {
         console.log(data);
-        buildInventoryList(data);
+        if (data.warning) {
+            showWarning(data.warning);
+        }
+        buildInventoryList(data.data);
     })
     .catch(function (error) {
         console.log('There was an problem: ', error.message)
     })
 }
 
+function showWarning(msg) {
+    const notice = document.createElement('div');
+    notice.className = 'notice';
+    notice.innerHTML = '&#10069; ' + msg;
+    document.querySelector('#management-links').insertBefore(notice, document.querySelector('#inventoryDisplay'));
+    setTimeout(() => notice.remove(), 5000);
+}
+
+
 function buildInventoryList(data) {
     console.log("We are in the Inventory List Constructor.")
+    console.log("buildInventoryList Data: ", data)
     let inventoryDisplay = document.getElementById('inventoryDisplay');
 
-    let dataTable = '<thead>';
-    dataTable += '<tr><th>Vehicle Name</th><td>&nbsp;</td><td>&nbsp;</tb></tr>';
-    dataTable += '</thead>';
-    dataTable += '<tbody>';
+    if (data.length) {
+        let dataTable = '<thead>';
+        dataTable += '<tr><th>Vehicle Name</th><td>&nbsp;</td><td>&nbsp;</tb></tr>';
+        dataTable += '</thead>';
+        dataTable += '<tbody>';
 
-    data.forEach(function (element) {
-        console.log(element.inv_id + ", " + element.inv_model);
-        dataTable += `<tr><td>${element.inv_make} ${element.inv_model}</td>`;
-        dataTable += `<td><a href='/inv/edit/${element.inv_id}' title='Click to update'>Modify</a></td>`;
-        dataTable += `<td><a href='/inv/delete/${element.inv_id} title='Click to delete'>Delete</a></td></tr>`;
-    })
-    dataTable += '</tbody>';
+        data.forEach(function (element) {
+            console.log(element.inv_id + ", " + element.inv_model);
+            dataTable += `<tr><td>${element.inv_make} ${element.inv_model}</td>`;
+            console.log(`${element.inv_make} ${element.inv_model}: ${element.inv_id}`)
+            dataTable += `<td><a href='/inv/edit/${element.inv_id}' title='Click to update'>Modify</a></td>`;
+            dataTable += `<td><a href='/inv/delete/${element.inv_id}' title='Click to delete'>Delete</a></td></tr>`;
+        })
+        dataTable += '</tbody>';
 
-    inventoryDisplay.innerHTML = dataTable;
+        inventoryDisplay.innerHTML = dataTable;
+    } else {
+        showWarning("No inventory found for this classification");
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
