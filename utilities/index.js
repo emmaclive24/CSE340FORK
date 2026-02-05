@@ -50,11 +50,8 @@ Util.buildFilterControl = async function (classification_ids, prevFilters={} ) {
 
     const MAX_COLUMNS = [ 'inv_price', 'inv_miles' ] 
     const MIN_COLUMNS = [ 'inv_year' ]
-
-    let hiddenIds = classification_ids.map(id => `<input type="hidden" name="classification_ids[]" value="${id}">`).join('');
-
+    
     filters = `<form action="/inv/type/${classification_ids}" method='get'>`
-    filters += hiddenIds;
 
     if (empty) filters += `<p>That Classification is empty, select a new classification(s)</p>`
     else { filters += `<p>Filter by field or Search by Column</p>` }

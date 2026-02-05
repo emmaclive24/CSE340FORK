@@ -161,8 +161,10 @@ invCont.buildNewInventoryForm = async function (req, res, next) {
 }
 
 invCont.addNewInventory = async function (req, res, next) {
-    const { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body
-    const classification_name = ''
+    let { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body
+    let classification_name = ''
+    inv_image = inv_image || '/images/vehicles/no-image.png'
+    inv_thumbnail = inv_thumbnail || '/images/vehicles/no-image-tn.png'
     const result = await invModel.addNewVehicle(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id)
     const classes = await invModel.getClassifications()
 
@@ -240,12 +242,15 @@ invCont.buildVehicleEditor = async (req, res, next) => {
 }
 
 invCont.updateVehicle = async function (req, res, next) {
-    const { inv_make, inv_model, inv_description, inv_image, inv_thumbnail, inv_color } = req.body
+    let { inv_make, inv_model, inv_description, inv_image, inv_thumbnail, inv_color } = req.body
     const inv_year = parseInt(req.body.inv_year) || null;
     const inv_price = parseInt(req.body.inv_price) || 0;
     const inv_miles = parseInt(req.body.inv_miles) || 0;
     const classification_id = parseInt(req.body.classification_id) || null;
     const inv_id = parseInt(req.params.invId || req.body.inv_id);
+    // Apply defaults if empty
+    inv_image = inv_image || '/images/vehicles/no-image.png'
+    inv_thumbnail = inv_thumbnail || '/images/vehicles/no-image-tn.png'
     console.log("Inventory ID: ", inv_id)
 
     const result = await invModel.updateVehicle(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id, inv_id)

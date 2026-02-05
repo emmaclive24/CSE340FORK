@@ -55,19 +55,17 @@ validate.invRules = () => {
             .isLength({ min: 10, max: 500 })
             .withMessage("Description must be between 10 and 500 characters."),
 
-        // Main Image (required URL or file check)
+        // Main Image (defaults to no-image.png if not provided)
         body("inv_image")
             .trim()
-            .notEmpty()
-            .withMessage("Main image is required.").bail()
+            .if(value => value !== '')
             .matches(/^(https?:\/\/.*\.(jpg|jpeg|png|webp)$|^\/images\/vehicles\/.*\.(jpg|jpeg|png|webp)$)/i)
             .withMessage("Main image must be valid image URL or location (jpg/jpeg/png/webp)."),
 
-        // Thumbnail (required URL or file check)
+        // Thumbnail (defaults to no-image-tn.png if not provided)
         body("inv_thumbnail")
             .trim()
-            .notEmpty()
-            .withMessage("Thumbnail image is required.").bail()
+            .if(value => value !== '')
             .matches(/^(https?:\/\/.*\.(jpg|jpeg|png|webp)$|^\/images\/vehicles\/.*\.(jpg|jpeg|png|webp)$)/i)
             .withMessage("Thumbnail must be valid image URL or location (jpg/jpeg/png/webp)."),
 
