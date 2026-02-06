@@ -5,20 +5,30 @@ const invCont = {}
 
 /* Building Inventory by Classification view */
 invCont.buildByClassificationId = async function (req, res, next) {
-    const rawId = req.query.classification_ids ?? req.params.classificationId;
-    const classification_id = parseInt(rawId, 10);
+    // Normalize classification IDs from query or path. Accepts:
+    // - query array: classification_ids[]=1&classification_ids[]=2
+    // - single query value: classification_ids=1
+    // - comma-separated path param: /type/1,2,3
+    let classification_ids = []
 
-    let classification_ids = req.query.classification_ids
-    if (!classification_ids || classification_ids.length === 0) {
-        classification_ids = [classification_id]
-    } else if (!Array.isArray(classification_ids)) {
-        classification_ids = [classification_ids]
+    if (req.query.classification_ids) {
+        classification_ids = Array.isArray(req.query.classification_ids)
+            ? req.query.classification_ids.slice()
+            : [req.query.classification_ids]
+    } else if (req.params.classificationId) {
+        classification_ids = String(req.params.classificationId).split(",").filter(Boolean)
     }
-    const classSet = new Set(classification_ids.map(Number).filter(Boolean)) // Removing Duplicate classification Ids
-    classification_ids = Array.from(classSet)
+
+    classification_ids = classification_ids.map(Number).filter(Boolean) // to numbers and remove invalid
+
+    // Fallback: if nothing parsed but a single numeric param exists, try that
+    if (classification_ids.length === 0 && req.params.classificationId) {
+        const single = Number(req.params.classificationId)
+        if (Number.isInteger(single)) classification_ids = [single]
+    }
 
     console.log("classification_ids (In Controller): ", classification_ids)
-    const filters = req.query;
+    const filters = req.query
 
     const data = await invModel.getInventoryByClassificationId(classification_ids, filters)
 
@@ -287,6 +297,27 @@ invCont.updateVehicle = async function (req, res, next) {
             classification_id
         })
     }
+}
+
+invCont.buildDeleteConfirmation = async function (req, res, next) {
+    const inv_id = parseInt(req.params.inv_id);
+    const vehicle = await invModel.getByInventoryId(inv_id);
+    const {inv_make, inv_model } = vehicle
+    const inv_year = vehicle.inv_year;
+    const inv_price = vehicle.inv_price || 0;
+
+    let nav = await utilities.getNav()
+
+    res.render("inventory/delete-confirm", {
+        title: "Delete Inventory Confirmation",
+        nav,
+        messages: req.flash(),
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_price,
+        inv_id
+    })
 }
 
 // Delete Vehicle

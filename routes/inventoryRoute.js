@@ -17,8 +17,10 @@ router.get("/", utilities.checkLogin, utilities.checkEmployee, invController.bui
     router.post("/classification", invValidate.classRules(), invValidate.checkClassificationData, utilities.handleErrors(invController.addClass))
     router.get("/new", invController.buildNewInventoryForm)
     router.post("/new", invValidate.invRules(), invValidate.checkNewInventoryData, utilities.handleErrors(invController.addNewInventory))
-    router.get("/delete/:inv_id", utilities.checkLogin, utilities.checkEmployee, utilities.handleErrors(invController.removeVehicle))
-    router.delete("/delete/:inv_id", utilities.checkLogin, utilities.checkEmployee, utilities.handleErrors(invController.removeVehicle));
+    // Route to add confirmation for deletion of inventory items.
+    router.get("/delete/:inv_id", utilities.checkLogin, utilities.checkEmployee, utilities.handleErrors(invController.buildDeleteConfirmation))
+    // Route to delete inventory items
+    router.post("/delete/:inv_id", utilities.checkLogin, utilities.checkEmployee, utilities.handleErrors(invController.removeVehicle));
     router.get("/getInventory/:classification_id", utilities.checkLogin, utilities.handleErrors(invController.getInventoryJSON))
     router.post("/edit/:invId", invValidate.invRules(), invValidate.checkUpdateData, utilities.handleErrors(invController.updateVehicle))
 

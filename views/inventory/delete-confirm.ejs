@@ -1,0 +1,38 @@
+<% if (title) { %>
+ <h1><%= title %></h1>
+ <% } else {
+    res.redirect('/')
+ } %>
+
+<% if (typeof messages !== 'undefined') { %>
+    <% if (messages.notice) { %>
+        <div class="notice">&#10069; <%= messages.notice %></div>
+    <% } %>
+    <% if (typeof errors !== 'undefined' && !errors.isEmpty()) { %>
+        <ul class="notice error">
+            <% errors.array().forEach(error => { %>
+                <li>&#9940; <%= error.msg %></li> 
+            <% }) %>
+        </ul>
+    <% } %>
+    <% if (messages.success) { %>
+        <div class="notice success">&#9989; <%= messages.success %></div>
+    <% } %>
+<% } %>
+
+<div id="login-box">
+    <p>Confirm Deletion - This can not be undone</p>
+    <form action="<%= inv_id %>" method="POST" class="edit-form" id="edit-inventory">
+        <label for="inv_make">Make: </label>
+        <input type="text" name="inv_make" id="inv_make" value="<%= inv_make %>" readonly>
+        <label for="inv_model">Model: </label>
+        <input type="text" name="inv_model" id="inv_model" value="<%= inv_model %>" readonly>
+        <label for="inv_year">Year: </label>
+        <input type="number" name="inv_year" id="inv_year" value="<%= inv_year %>" readonly>
+        <label for="inv_price">Price: </label>
+        <input type="number" name="inv_price" id="inv_price" value="<%= inv_price %>" readonly>
+        <br>
+        <input type="hidden" name="inv_id" value="<%= inv_id %>">
+        <button type="submit" class="submit-btn">Delete Vehicle</button>
+    </form>
+</div>

@@ -54,7 +54,7 @@ async function getInventoryByClassificationId(classification_ids = [], filters =
 
         if (filters.sort_by) {
             const [sort_head, sortColumn, sortOrder] = filters.sort_by.split("_");
-            queryText += `ORDER BY i.${sort_head + "_" + sortColumn} ${sortOrder.toUpperCase()}`;
+            queryText += ` ORDER BY i.${sort_head + "_" + sortColumn} ${sortOrder.toUpperCase()}`;
         }
         console.log("Query Params: ", queryParams)
         const data = await pool.query(queryText, queryParams)
