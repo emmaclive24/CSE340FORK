@@ -138,12 +138,12 @@ invCont.buildNewInventoryForm = async function (req, res, next) {
         
         inv_make = form_make || '';
         inv_model = form_model || '';
-        inv_year = form_year || '';
+        inv_year = form_year || 0;
         inv_description = inv_description || '';
         inv_image = inv_image || '';
         inv_thumbnail = inv_thumbnail || '';
-        inv_price = inv_price || '';
-        inv_miles = inv_miles || '';
+        inv_price = inv_price || 0;
+        inv_miles = inv_miles || 0;
         inv_color = inv_color || '';
         classification_id = form_class_id || '';
     }
