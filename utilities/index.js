@@ -109,7 +109,8 @@ Util.buildFilterControl = async function (classification_ids, prevFilters={} ) {
 }
 /* Classification View Creation */
 Util.buildClassificationGrid = async function(data) {
-    let grid
+    let grid = ''
+    console.log("ClassificationGrid Data: ", data)
     if(data.length > 0){
         grid = '<ul id="inv-display">'
         data.forEach(vehicle => {

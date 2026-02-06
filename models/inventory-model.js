@@ -72,13 +72,13 @@ async function getFilterOptions(classification_id) {
             [classification_id]
         );
         if (result.rows.length === 0) {
-            return { empty:true, columns: [] }
+            return { isEmpty:true, columns: [] }
         }
         const columns = Object.keys(result.rows[0])
-        return { empty: false, columns }
+        return { isEmpty: false, columns }
     } catch (error) {
         console.error("FilterOptions Error: ", error)
-        return { empty: true, columns: [] }
+        return { isEmpty: true, columns: [] }
     }
 }
 
