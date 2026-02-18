@@ -1,4 +1,1 @@
-root: C:\Users\Nathaniel\Documents\WDD340 
-path: C:\Program Files\nodejs 
-arch: 64 
-proxy: none
+
